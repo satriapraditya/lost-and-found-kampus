@@ -28,25 +28,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // User memiliki banyak laporan
     public function reports()
     {
         return $this->hasMany(Report::class);
     }
 
-    // User dapat memiliki banyak klaim
     public function claims()
     {
         return $this->hasMany(Claim::class);
     }
 
-    // User memiliki banyak notifikasi
     public function notifications()
     {
         return $this->hasMany(Notification::class);
     }
 
-    // User memiliki banyak riwayat laporan
     public function reportHistories()
     {
         return $this->hasMany(ReportHistory::class);
