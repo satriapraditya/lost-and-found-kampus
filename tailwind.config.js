@@ -36,6 +36,10 @@ export default {
           bg: "#fef3c7",
           text: "#92400e",
         },
+        info: {
+          bg: "#dbeafe",
+          text: "#1e40af",
+        },
       },
       fontSize: {
         hero: "36px",

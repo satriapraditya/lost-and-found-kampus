@@ -9,7 +9,7 @@
         'menunggu'  => ['bg' => 'bg-warning-bg', 'text' => 'text-warning-text', 'label' => 'Menunggu'],
         'disetujui' => ['bg' => 'bg-success-bg', 'text' => 'text-success-text', 'label' => 'Disetujui'],
         'ditolak'   => ['bg' => 'bg-danger-bg',  'text' => 'text-danger-text',  'label' => 'Ditolak'],
-        'selesai'   => ['bg' => 'bg-surface-muted', 'text' => 'text-text-secondary', 'label' => 'Selesai'],
+        'selesai'   => ['bg' => 'bg-info-bg',    'text' => 'text-info-text', 'label' => 'Selesai'],
     ];
 
     $style = $map[$status] ?? $map['menunggu'];
