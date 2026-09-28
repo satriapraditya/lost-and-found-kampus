@@ -14,6 +14,7 @@ class Claim extends Model
         'user_id',
         'claim_description',
         'proof_description',
+        'whatsapp',
         'status',
         'admin_note',
     ];
