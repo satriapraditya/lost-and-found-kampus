@@ -26,6 +26,8 @@
   --color-danger-text: #991b1b;
   --color-warning-bg: #fef3c7;
   --color-warning-text: #92400e;
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1e40af;
 
   /* Tipografi */
   --font-family: "Inter", ui-sans-serif, system-ui, sans-serif;

@@ -77,4 +77,47 @@ Route::post('/barang/{id}/klaim', function ($id) {
 
 // Placeholder — implementasi belum dibuat di Pertemuan 4 ini
 Route::get('/lapor', fn () => 'TODO: form-lapor.blade.php')->name('lapor.create');
-Route::get('/riwayat', fn () => 'TODO: riwayat.blade.php')->name('riwayat');
+
+/*
+| Riwayat: laporan & klaim milik user yang login.
+| Status di database (pending/approved/rejected/completed) dipetakan ke
+| nilai yang dikenali komponen status-badge.
+| Belum ada fitur login, jadi tanpa user kedua daftar tampil kosong.
+*/
+Route::get('/riwayat', function () {
+    $user = auth()->user();
+
+    if (! $user) {
+        return view('pages.riwayat', ['reports' => collect(), 'claims' => collect()]);
+    }
+
+    $reportStatus = [
+        'pending'   => 'menunggu',
+        'approved'  => 'tersedia',
+        'rejected'  => 'ditolak',
+        'completed' => 'diklaim',
+    ];
+
+    $claimStatus = [
+        'pending'   => 'menunggu',
+        'approved'  => 'disetujui',
+        'rejected'  => 'ditolak',
+        'completed' => 'selesai',
+    ];
+
+    $reports = $user->reports()->latest()->get()->map(fn ($report) => (object) [
+        'id' => $report->id,
+        'title' => $report->item_name,
+        'submitted_at' => $report->created_at,
+        'status' => $reportStatus[$report->status] ?? 'menunggu',
+    ]);
+
+    $claims = $user->claims()->with('report')->latest()->get()->map(fn ($claim) => (object) [
+        'item_id' => $claim->report_id,
+        'title' => $claim->report->item_name,
+        'submitted_at' => $claim->created_at,
+        'status' => $claimStatus[$claim->status] ?? 'menunggu',
+    ]);
+
+    return view('pages.riwayat', compact('reports', 'claims'));
+})->name('riwayat');
