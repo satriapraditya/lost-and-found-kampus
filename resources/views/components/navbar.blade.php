@@ -1,5 +1,3 @@
-@props(['active' => 'beranda'])
-
 @php
     $links = [
         'beranda' => ['label' => 'Beranda', 'route' => 'beranda'],
@@ -22,12 +20,16 @@
 
         <nav class="flex h-full items-center gap-8">
             @foreach ($links as $key => $link)
+                @php
+                    // Mengecek apakah rute saat ini sama dengan rute pada menu
+                    $isActive = request()->routeIs($link['route']);
+                @endphp
                 <a
                     href="{{ route($link['route']) }}"
-                    class="relative flex h-full items-center text-label {{ $active === $key ? 'font-semibold text-primary' : 'font-medium text-text-secondary hover:text-text' }}"
+                    class="relative flex h-full items-center text-label {{ $isActive ? 'font-semibold text-primary' : 'font-medium text-text-secondary hover:text-text' }}"
                 >
                     {{ $link['label'] }}
-                    @if ($active === $key)
+                    @if ($isActive)
                         <span class="absolute inset-x-0 bottom-0 h-[3px] bg-primary"></span>
                     @endif
                 </a>
@@ -42,12 +44,10 @@
             <div class="flex items-center gap-2.5">
                 <div class="h-9 w-9 rounded-full bg-surface-muted"></div>
                 <div class="flex flex-col leading-tight">
-                    <span class="text-[14px] font-semibold text-text">{{ auth()->user()->name ?? 'Nama Pengguna' }}</span>
-                    <span class="text-[11px] text-text-secondary">NIM. {{ auth()->user()->nim ?? '—' }}</span>
+                    <span class="text-[14px] font-semibold text-text">{{ auth()->user()->name ?? 'Satria Praditya Utama' }}</span>
+                    <span class="text-[11px] text-text-secondary">NIM. {{ auth()->user()->nim ?? '24051130071' }}</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
-
-{{-- Contoh pakai: <x-navbar active="beranda" /> --}}
