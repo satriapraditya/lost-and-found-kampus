@@ -75,11 +75,31 @@ Route::post('/barang/{id}/klaim', function ($id) {
     return redirect()->route('klaim.create', $id)->with('submitted', true);
 })->name('klaim.store');
 
-// Placeholder — implementasi belum dibuat di Pertemuan 4 ini
-Route::get('/lapor', fn () => 'TODO: form-lapor.blade.php')->name('lapor.create');
+// Rute untuk menampilkan form Lapor Temuan (Dari Kodemu)
+Route::get('/lapor-temuan', function () {
+    return view('pages.form-lapor'); // Pastikan ini mengarah ke form-lapor atau lapor-temuan sesuai nama filemu
+})->name('lapor.create');
+
+// Rute untuk menangani pengiriman data form Lapor Temuan (Dari Kodemu)
+Route::post('/lapor-temuan', function () {
+    // Validasi dummy untuk UI saat ini, akan disesuaikan saat Pertemuan 5 (CRUD)
+    request()->validate([
+        'nama_barang' => 'required|string|max:255',
+        'deskripsi' => 'required|string|min:10',
+        'kategori' => 'required|string',
+        'lokasi' => 'required|string|max:255',
+        'tanggal' => 'required|date',
+        'nama_pelapor' => 'required|string|max:100',
+        'kontak' => 'required|string|max:20',
+        // 'foto' validation can be added later
+    ]);
+
+    // Redirect kembali ke form dengan pesan sukses
+    return redirect()->route('lapor.create')->with('success', 'Laporan berhasil dikirim. Menunggu tinjauan admin.');
+})->name('lapor.store');
 
 /*
-| Riwayat: laporan & klaim milik user yang login.
+| Riwayat: laporan & klaim milik user yang login. (Dari Kode Temanmu)
 | Status di database (pending/approved/rejected/completed) dipetakan ke
 | nilai yang dikenali komponen status-badge.
 | Belum ada fitur login, jadi tanpa user kedua daftar tampil kosong.
