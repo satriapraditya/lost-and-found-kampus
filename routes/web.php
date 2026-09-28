@@ -141,3 +141,12 @@ Route::get('/riwayat', function () {
 
     return view('pages.riwayat', compact('reports', 'claims'));
 })->name('riwayat');
+
+// Rute untuk Halaman Auth (Mockup UI)
+Route::get('/login', function () {
+    return view('pages.auth.login');
+})->name('login');
+
+Route::get('/register', function () {
+    return view('pages.auth.register');
+})->name('register');
