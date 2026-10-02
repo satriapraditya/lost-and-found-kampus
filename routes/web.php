@@ -150,3 +150,7 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('pages.auth.register');
 })->name('register');
+// Rute Login Admin (Mockup UI)
+Route::get('/admin/login', function () {
+    return view('pages.admin.login');
+})->name('admin.login');
