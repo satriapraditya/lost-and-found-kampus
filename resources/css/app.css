@@ -10,24 +10,44 @@
    (misalnya style inline atau komponen JS).
    ========================================================== */
 :root {
-  /* Warna */
-  --color-primary: #7c3aed;
-  --color-primary-hover: #6d28d9;
-  --color-text: #111827;
-  --color-text-secondary: #4b5563;
-  --color-text-muted: #9ca3af;
-  --color-surface: #f9fafb;
-  --color-surface-white: #ffffff;
-  --color-surface-muted: #f3f4f6;
-  --color-border: #e5e7eb;
-  --color-success-bg: #d1fae5;
-  --color-success-text: #065f46;
-  --color-danger-bg: #fee2e2;
-  --color-danger-text: #991b1b;
-  --color-warning-bg: #fef3c7;
-  --color-warning-text: #92400e;
-  --color-info-bg: #dbeafe;
-  --color-info-text: #1e40af;
+  /* Warna — ditulis sebagai kanal RGB ("124 58 237") supaya class Tailwind
+     dengan opacity seperti bg-primary/10 tetap jalan (lihat tailwind.config.js).
+     Nilai hex aslinya ada di komentar. */
+  --rgb-primary: 124 58 237;          /* #7c3aed */
+  --rgb-primary-hover: 109 40 217;    /* #6d28d9 */
+  --rgb-text: 17 24 39;               /* #111827 */
+  --rgb-text-secondary: 75 85 99;     /* #4b5563 */
+  --rgb-text-muted: 156 163 175;      /* #9ca3af */
+  --rgb-surface: 249 250 251;         /* #f9fafb */
+  --rgb-surface-white: 255 255 255;   /* #ffffff */
+  --rgb-surface-muted: 243 244 246;   /* #f3f4f6 */
+  --rgb-border: 229 231 235;          /* #e5e7eb */
+  --rgb-success-bg: 209 250 229;      /* #d1fae5 */
+  --rgb-success-text: 6 95 70;        /* #065f46 */
+  --rgb-danger-bg: 254 226 226;       /* #fee2e2 */
+  --rgb-danger-text: 153 27 27;       /* #991b1b */
+  --rgb-warning-bg: 254 243 199;      /* #fef3c7 */
+  --rgb-warning-text: 146 64 14;      /* #92400e */
+  --rgb-info-bg: 219 234 254;         /* #dbeafe */
+  --rgb-info-text: 30 64 175;         /* #1e40af */
+
+  --color-primary: rgb(var(--rgb-primary));
+  --color-primary-hover: rgb(var(--rgb-primary-hover));
+  --color-text: rgb(var(--rgb-text));
+  --color-text-secondary: rgb(var(--rgb-text-secondary));
+  --color-text-muted: rgb(var(--rgb-text-muted));
+  --color-surface: rgb(var(--rgb-surface));
+  --color-surface-white: rgb(var(--rgb-surface-white));
+  --color-surface-muted: rgb(var(--rgb-surface-muted));
+  --color-border: rgb(var(--rgb-border));
+  --color-success-bg: rgb(var(--rgb-success-bg));
+  --color-success-text: rgb(var(--rgb-success-text));
+  --color-danger-bg: rgb(var(--rgb-danger-bg));
+  --color-danger-text: rgb(var(--rgb-danger-text));
+  --color-warning-bg: rgb(var(--rgb-warning-bg));
+  --color-warning-text: rgb(var(--rgb-warning-text));
+  --color-info-bg: rgb(var(--rgb-info-bg));
+  --color-info-text: rgb(var(--rgb-info-text));
 
   /* Tipografi */
   --font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -66,4 +86,33 @@ body {
   font-family: var(--font-family);
   color: var(--color-text);
   background-color: var(--color-surface);
+}
+
+/* ==========================================================
+   Mode gelap — aktif kalau <html data-theme="dark">.
+   Saat ini hanya dipakai area admin (tombol di topbar admin).
+   Cukup ganti nilai token; class Tailwind tidak perlu "dark:".
+   ========================================================== */
+[data-theme="dark"] {
+  color-scheme: dark; /* input tanggal, select, scrollbar ikut gelap */
+
+  --rgb-primary: 139 92 246;          /* #8b5cf6 — lebih terang supaya terbaca di latar gelap */
+  --rgb-primary-hover: 124 58 237;    /* #7c3aed */
+  --rgb-text: 243 244 246;            /* #f3f4f6 */
+  --rgb-text-secondary: 209 213 219;  /* #d1d5db */
+  --rgb-text-muted: 156 163 175;      /* #9ca3af */
+  --rgb-surface: 11 17 32;            /* #0b1120 — latar halaman */
+  --rgb-surface-white: 17 24 39;      /* #111827 — latar kartu */
+  --rgb-surface-muted: 31 41 55;      /* #1f2937 */
+  --rgb-border: 39 50 68;             /* #273244 */
+  --rgb-success-bg: 6 78 59;          /* #064e3b */
+  --rgb-success-text: 110 231 183;    /* #6ee7b7 */
+  --rgb-danger-bg: 76 29 29;          /* #4c1d1d */
+  --rgb-danger-text: 252 165 165;     /* #fca5a5 */
+  --rgb-warning-bg: 66 32 6;          /* #422006 */
+  --rgb-warning-text: 252 211 77;     /* #fcd34d */
+  --rgb-info-bg: 23 37 84;            /* #172554 */
+  --rgb-info-text: 147 197 253;       /* #93c5fd */
+
+  --shadow-card: 0px 4px 12px 0px rgba(0, 0, 0, 0.3);
 }
