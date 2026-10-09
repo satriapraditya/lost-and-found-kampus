@@ -156,14 +156,12 @@ Route::get('/admin/login', function () {
 })->name('admin.login');
 /*
 |--------------------------------------------------------------------------
-| Area Admin — Layout, Dashboard & Statistik (Yosi)
+| Area Admin (Yosi)
 |--------------------------------------------------------------------------
-| Halaman admin lain ikut grup ini dengan nama rute yang sudah disiapkan di
-| sidebar (resources/views/components/admin/sidebar.blade.php):
-|   admin.lost.index, admin.found.index   → Ahmad
-|   admin.claims.index                    → Adit
-|   admin.admins.index, admin.users.index → Arsha
-| TODO (Arsha): tambahkan ->middleware(['auth', 'admin']) begitu login &
+| Dashboard, Statistik, Barang Hilang/Temuan, Verifikasi Klaim, Kelola Admin,
+| dan Daftar User. Nama rute mengikuti menu di sidebar
+| (resources/views/components/admin/sidebar.blade.php).
+| TODO: tambahkan ->middleware(['auth', 'admin']) begitu login &
 | middleware admin selesai. Sementara ini terbuka supaya bisa dites.
 */
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -172,4 +170,39 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/statistik', [\App\Http\Controllers\Admin\StatisticsController::class, 'index'])->name('statistics');
     Route::get('/statistik/export/excel', [\App\Http\Controllers\Admin\StatisticsController::class, 'exportExcel'])->name('statistics.excel');
     Route::get('/statistik/export/pdf', [\App\Http\Controllers\Admin\StatisticsController::class, 'print'])->name('statistics.pdf');
+
+    // Barang Hilang & Temuan — satu controller, dibedakan type
+    Route::controller(\App\Http\Controllers\Admin\ReportController::class)->group(function () {
+        Route::get('/barang-hilang', 'index')->defaults('type', 'lost')->name('lost.index');
+        Route::get('/barang-hilang/{report}', 'show')->name('lost.show');
+        Route::get('/barang-temuan', 'index')->defaults('type', 'found')->name('found.index');
+        Route::get('/barang-temuan/{report}', 'show')->name('found.show');
+
+        Route::patch('/laporan/{report}/setujui', 'approve')->name('reports.approve');
+        Route::patch('/laporan/{report}/tolak', 'reject')->name('reports.reject');
+        Route::patch('/laporan/{report}/selesai', 'complete')->name('reports.complete');
+        Route::delete('/laporan/{report}', 'destroy')->name('reports.destroy');
+    });
+
+    // Verifikasi Klaim
+    Route::controller(\App\Http\Controllers\Admin\ClaimController::class)->prefix('klaim')->name('claims.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{claim}', 'show')->name('show');
+        Route::patch('/{claim}/setujui', 'approve')->name('approve');
+        Route::patch('/{claim}/tolak', 'reject')->name('reject');
+        Route::patch('/{claim}/selesai', 'complete')->name('complete');
+    });
+
+    // Kelola Admin
+    Route::controller(\App\Http\Controllers\Admin\AdminController::class)->prefix('kelola-admin')->name('admins.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/tambah', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::patch('/{user}/jadikan-admin', 'promote')->name('promote');
+        Route::patch('/{user}/cabut', 'demote')->name('demote');
+    });
+
+    // Daftar User
+    Route::get('/user', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::delete('/user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 });

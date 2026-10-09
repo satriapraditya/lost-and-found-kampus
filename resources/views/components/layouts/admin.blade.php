@@ -94,6 +94,18 @@
                     @endisset
                 </div>
 
+                {{-- Pesan hasil aksi: ->with('success', ...) / ->with('error', ...) --}}
+                @if (session('success'))
+                    <div role="status" class="rounded-md border border-success-text/20 bg-success-bg px-5 py-3.5 text-small font-medium text-success-text">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div role="alert" class="rounded-md border border-danger-text/20 bg-danger-bg px-5 py-3.5 text-small font-medium text-danger-text">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 {{ $slot }}
             </div>
         </main>
