@@ -107,7 +107,7 @@ Route::post('/lapor-temuan', function () {
 Route::get('/riwayat', function () {
     $user = auth()->user();
 
-    if (! $user) {
+if (! $user) {
         return view('pages.riwayat', ['reports' => collect(), 'claims' => collect()]);
     }
 
@@ -154,3 +154,22 @@ Route::get('/register', function () {
 Route::get('/admin/login', function () {
     return view('pages.admin.login');
 })->name('admin.login');
+/*
+|--------------------------------------------------------------------------
+| Area Admin — Layout, Dashboard & Statistik (Yosi)
+|--------------------------------------------------------------------------
+| Halaman admin lain ikut grup ini dengan nama rute yang sudah disiapkan di
+| sidebar (resources/views/components/admin/sidebar.blade.php):
+|   admin.lost.index, admin.found.index   → Ahmad
+|   admin.claims.index                    → Adit
+|   admin.admins.index, admin.users.index → Arsha
+| TODO (Arsha): tambahkan ->middleware(['auth', 'admin']) begitu login &
+| middleware admin selesai. Sementara ini terbuka supaya bisa dites.
+*/
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', \App\Http\Controllers\Admin\DashboardController::class)->name('dashboard');
+
+    Route::get('/statistik', [\App\Http\Controllers\Admin\StatisticsController::class, 'index'])->name('statistics');
+    Route::get('/statistik/export/excel', [\App\Http\Controllers\Admin\StatisticsController::class, 'exportExcel'])->name('statistics.excel');
+    Route::get('/statistik/export/pdf', [\App\Http\Controllers\Admin\StatisticsController::class, 'print'])->name('statistics.pdf');
+});
