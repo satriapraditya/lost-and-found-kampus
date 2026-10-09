@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class LostFoundWorkflowTest extends TestCase
@@ -18,6 +19,7 @@ class LostFoundWorkflowTest extends TestCase
 
     public function test_user_can_register_and_login_with_nim()
     {
+        Category::create(['name' => 'Elektronik']);
         $this->get(route('login'))->assertOk();
         $this->get(route('register'))->assertOk();
 
@@ -34,6 +36,7 @@ class LostFoundWorkflowTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', ['nim' => '20260001', 'role' => 'user']);
+        $this->get(route('lapor.create'))->assertOk()->assertSee('Elektronik');
 
         auth()->logout();
 
@@ -51,12 +54,13 @@ class LostFoundWorkflowTest extends TestCase
         $user = User::factory()->create();
         $category = Category::create(['name' => 'Elektronik']);
 
-        $response = $this->actingAs($user)->post(route('lapor.store'), [
+        $this->actingAs($user)->post(route('lapor.store'), [
             'nama_barang' => 'Dompet kulit cokelat',
             'deskripsi' => 'Ada goresan kecil di sisi kiri dan kartu perpustakaan di dalam.',
             'kategori' => $category->id,
             'lokasi' => 'Perpustakaan lantai dua',
             'tanggal' => now()->toDateString(),
+            'foto' => UploadedFile::fake()->create('dompet.jpg', 10, 'image/jpeg'),
         ])->assertRedirect();
 
         $report = Report::firstOrFail();
@@ -70,6 +74,11 @@ class LostFoundWorkflowTest extends TestCase
             'user_id' => $user->id,
             'status' => 'pending',
         ]);
+        $this->assertDatabaseHas('report_images', [
+            'report_id' => $report->id,
+            'is_primary' => true,
+        ]);
+        Storage::disk('public')->assertExists($report->images()->first()->image_path);
     }
 
     public function test_admin_can_approve_a_report_and_it_appears_on_the_public_listing()
@@ -89,6 +98,7 @@ class LostFoundWorkflowTest extends TestCase
             'status' => 'pending',
         ]);
 
+        $this->actingAs($admin)->get(route('barang.detail', $report))->assertOk();
         $this->actingAs($admin)->patch(route('admin.reports.update', $report), [
             'status' => 'approved',
             'note' => 'Informasi sudah ditinjau.',
@@ -115,6 +125,7 @@ class LostFoundWorkflowTest extends TestCase
     {
         $owner = User::factory()->create();
         $claimant = User::factory()->create();
+        $secondClaimant = User::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
         $category = Category::create(['name' => 'Elektronik']);
         $location = Location::create(['name' => 'Gedung A']);
@@ -136,11 +147,23 @@ class LostFoundWorkflowTest extends TestCase
         $this->get(route('klaim.create', $report))->assertOk();
 
         $claim = Claim::firstOrFail();
+        $this->actingAs($secondClaimant)->post(route('klaim.store', $report), [
+            'ciri_khusus' => 'Ada goresan berbentuk garis di sisi kanan.',
+            'whatsapp' => $secondClaimant->phone,
+        ])->assertRedirect(route('klaim.create', $report));
+        $otherClaim = Claim::where('user_id', $secondClaimant->id)->firstOrFail();
+
         $this->assertSame('pending', $claim->status);
         $this->assertDatabaseHas('claim_histories', ['claim_id' => $claim->id, 'status' => 'pending']);
         $this->assertDatabaseHas('notifications', ['user_id' => $owner->id, 'type' => 'claim']);
 
         $this->actingAs($admin)->get(route('admin.index'))->assertOk();
+        $this->actingAs($claimant)->post(route('klaim.store', $report), [
+            'ciri_khusus' => 'Klaim duplikat untuk barang yang sama.',
+            'whatsapp' => $claimant->phone,
+        ])->assertSessionHasErrors('ciri_khusus');
+
+        $this->actingAs($admin)->get(route('notifications.index'))->assertOk();
         $this->patch(route('admin.claims.update', $claim), [
             'status' => 'approved',
             'note' => 'Bukti sesuai.',
@@ -148,7 +171,14 @@ class LostFoundWorkflowTest extends TestCase
 
         $this->assertDatabaseHas('reports', ['id' => $report->id, 'status' => 'claimed']);
         $this->assertDatabaseHas('claims', ['id' => $claim->id, 'status' => 'approved']);
+        $this->assertDatabaseHas('claims', ['id' => $otherClaim->id, 'status' => 'rejected']);
+        $this->assertDatabaseHas('claim_histories', ['claim_id' => $otherClaim->id, 'status' => 'rejected']);
         $this->assertDatabaseHas('report_histories', ['report_id' => $report->id, 'status' => 'claimed']);
+        $ownerNotification = Notification::where('user_id', $owner->id)->firstOrFail();
+        $this->actingAs($owner)->patch(route('notifications.read', $ownerNotification))
+            ->assertRedirect()
+            ->assertSessionHas('success');
+        $this->assertNotNull($ownerNotification->fresh()->read_at);
 
         $this->actingAs($admin)->patch(route('admin.claims.update', $claim), [
             'status' => 'completed',
@@ -165,5 +195,23 @@ class LostFoundWorkflowTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get(route('admin.index'))
             ->assertForbidden();
+    }
+
+    public function test_users_cannot_mark_another_users_notification_as_read()
+    {
+        $owner = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $notification = Notification::create([
+            'user_id' => $owner->id,
+            'title' => 'Laporan disetujui',
+            'message' => 'Laporan sudah ditinjau.',
+            'type' => 'report',
+        ]);
+
+        $this->actingAs($otherUser)
+            ->patch(route('notifications.read', $notification))
+            ->assertNotFound();
+
+        $this->assertNull($notification->fresh()->read_at);
     }
 }

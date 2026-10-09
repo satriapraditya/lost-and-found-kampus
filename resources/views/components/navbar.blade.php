@@ -41,10 +41,12 @@
 
             @auth
                 {{-- Tampilan jika USER SUDAH LOGIN --}}
-                <button type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-muted" aria-label="Notifikasi">
+                <a href="{{ route('notifications.index') }}" class="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-muted" aria-label="Notifikasi">
                     <span aria-hidden="true">🔔</span>
-                    <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-danger-text"></span>
-                </button>
+                    @if (auth()->user()->notifications()->whereNull('read_at')->exists())
+                        <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-danger-text"></span>
+                    @endif
+                </a>
                 
                 <a href="#" class="flex items-center gap-2.5 p-1.5 -mr-1.5 rounded-lg hover:bg-surface-muted transition-colors cursor-pointer" title="Profil Saya">
                     <div class="h-9 w-9 rounded-full bg-surface-muted"></div>

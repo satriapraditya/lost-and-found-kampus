@@ -36,13 +36,16 @@ class ClaimController extends Controller
             'whatsapp' => ['required', 'string', 'max:20'],
         ]);
 
-        if ($report->claims()->where('user_id', $request->user()->id)->whereIn('status', ['pending', 'approved'])->exists()) {
-            throw ValidationException::withMessages([
-                'ciri_khusus' => 'Anda sudah memiliki klaim aktif untuk barang ini.',
-            ]);
-        }
-
         DB::transaction(function () use ($request, $report, $data) {
+            $report = Report::query()->whereKey($report->id)->lockForUpdate()->firstOrFail();
+            abort_unless($report->status === 'approved', 409, 'Barang sudah tidak tersedia untuk diklaim.');
+
+            if ($report->claims()->where('user_id', $request->user()->id)->whereIn('status', ['pending', 'approved'])->exists()) {
+                throw ValidationException::withMessages([
+                    'ciri_khusus' => 'Anda sudah memiliki klaim aktif untuk barang ini.',
+                ]);
+            }
+
             $claim = $report->claims()->create([
                 'user_id' => $request->user()->id,
                 'claim_description' => 'Permohonan verifikasi kepemilikan.',

@@ -17,7 +17,7 @@
                     <span class="text-4xl" aria-hidden="true">✅</span>
                     <h1 class="text-h2 font-bold text-success-text">Klaim Berhasil Diajukan</h1>
                     <p class="max-w-md text-label text-text-secondary">
-                        Klaim kamu untuk <strong>{{ $item->title }}</strong> sudah masuk ke antrean admin. Kamu akan dihubungi lewat WhatsApp/email begitu diverifikasi.
+                        Klaim kamu untuk                         <strong>{{ $item->title }}</strong> sudah masuk ke antrean admin. Pantau status pengajuan melalui halaman Riwayat dan Notifikasi.
                     </p>
                     <x-button variant="primary" href="{{ route('riwayat') }}">Lihat Riwayat Klaim</x-button>
                 </div>
@@ -58,16 +58,6 @@
                         <hr class="border-border" />
                         <p class="text-[15px] font-bold text-text">Data Diri Pengklaim</p>
 
-                        <x-form-field
-                            type="text"
-                            name="nama_pengklaim"
-                            label="Nama Lengkap Pengklaim"
-                            placeholder="Budi Santoso"
-                            required
-                            :value="old('nama_pengklaim')"
-                            :error="$errors->first('nama_pengklaim')"
-                        />
-
                         <div class="rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
                             Klaim diajukan atas nama <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->email }}).
                         </div>
@@ -95,18 +85,4 @@
 
 </x-layouts.app>
 
-{{--
-    Controller (contoh, validasi + simulasi konfirmasi):
-    Route::post('/barang/{id}/klaim', function ($id) {
-        request()->validate([
-            'ciri_khusus' => 'required|string|min:10',
-            'nama_pengklaim' => 'required|string|max:100',
-            'whatsapp' => 'required|string|max:20',
-            'email' => 'required|email',
-        ]);
-        // simulasi: belum simpan ke DB beneran, cukup redirect dengan flash
-        return redirect()
-            ->route('klaim.create', $id)
-            ->with('submitted', true);
-    })->name('klaim.store');
---}}
+{

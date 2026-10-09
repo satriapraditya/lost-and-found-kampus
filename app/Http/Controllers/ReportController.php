@@ -43,6 +43,7 @@ class ReportController extends Controller
         abort_unless(
             in_array($report->status, ['approved', 'claimed', 'completed'], true)
                 || auth()->id() === $report->user_id
+                || auth()->user()?->role === 'admin'
                 || $report->claims()->where('user_id', auth()->id())->exists(),
             404
         );
@@ -55,7 +56,8 @@ class ReportController extends Controller
             'kategori' => $report->category->name,
             'status' => match ($report->status) {
                 'approved' => 'tersedia',
-                'claimed', 'completed' => 'diklaim',
+                'claimed' => 'diklaim',
+                'completed' => 'selesai',
                 'rejected' => 'ditolak',
                 default => 'menunggu',
             },
@@ -155,7 +157,7 @@ class ReportController extends Controller
             'approved' => 'tersedia',
             'claimed' => 'diklaim',
             'rejected' => 'ditolak',
-            'completed' => 'diklaim',
+            'completed' => 'selesai',
         ];
         $claimStatus = [
             'pending' => 'menunggu',
@@ -194,7 +196,7 @@ class ReportController extends Controller
             'image_url' => $primaryImage
                 ? Storage::url($primaryImage->image_path)
                 : null,
-            'found_at' => $report->created_at,
+            'found_at' => $report->event_date->copy()->setTimeFromTimeString($report->event_time ?? '00:00:00'),
         ];
     }
 }

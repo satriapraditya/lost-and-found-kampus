@@ -12,6 +12,12 @@
                 <span class="font-semibold text-primary">{{ $item->title }}</span>
             </nav>
 
+            @if (session('success'))
+                <div class="rounded-lg border border-success-text bg-success-bg p-4 text-success-text" role="status">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="flex gap-8 rounded-[20px] border border-border bg-surface-white p-8 shadow-card">
 
                 {{-- Kolom foto --}}
@@ -77,18 +83,19 @@
 
                     {{-- CTA: state tersedia vs sudah diklaim --}}
                     <div class="flex flex-col gap-3">
-                        @if ($item->status === 'diklaim')
+                        @if (in_array($item->status, ['diklaim', 'selesai'], true))
                             <x-button variant="secondary" disabled class="w-full justify-center opacity-60">
-                                Barang Sudah Diklaim
+                                {{ $item->status === 'selesai' ? 'Penyerahan Barang Selesai' : 'Barang Sudah Diklaim' }}
                             </x-button>
-                        @else
+                        @elseif ($item->status === 'tersedia')
                             <x-button variant="primary" href="{{ route('klaim.create', $item->id) }}" class="w-full justify-center">
                                 Klaim Barang Ini
                             </x-button>
+                        @else
+                            <x-button variant="secondary" disabled class="w-full justify-center opacity-60">
+                                {{ $item->status === 'ditolak' ? 'Laporan Ditolak' : 'Menunggu Verifikasi Admin' }}
+                            </x-button>
                         @endif
-                        <x-button variant="secondary" href="#hubungi-pelapor" class="w-full justify-center">
-                            Hubungi Pelapor
-                        </x-button>
                     </div>
                 </div>
             </div>
