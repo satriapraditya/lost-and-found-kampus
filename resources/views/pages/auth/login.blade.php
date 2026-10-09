@@ -31,14 +31,15 @@
                 <p class="mt-2 text-sm text-slate-500">Gunakan email institusi atau NIM untuk masuk. (Berlaku untuk Admin & Mahasiswa)</p>
             </div>
 
-            <form action="#" method="POST" class="space-y-5">
+            <form action="{{ route('login.store') }}" method="POST" class="space-y-5">
                 @csrf
                 
                 {{-- Email / NIM --}}
                 <div>
                     <label for="identifier" class="block text-sm font-semibold text-slate-700 mb-1">Email Kampus / NIM</label>
-                    <input id="identifier" name="identifier" type="text" required placeholder="mahasiswa@kampus.ac.id atau 240511..." 
+                    <input id="identifier" name="identifier" type="text" value="{{ old('identifier') }}" required placeholder="mahasiswa@kampus.ac.id atau 240511..."
                            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('identifier')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Password --}}
@@ -59,7 +60,7 @@
                         <input type="checkbox" name="remember" class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
                         <span class="text-sm text-slate-600">Ingat Saya</span>
                     </label>
-                    <a href="#" class="text-sm font-semibold text-violet-600 hover:text-violet-700 underline-offset-2 hover:underline">Lupa Kata Sandi?</a>
+                    <span class="text-sm text-slate-400">Hubungi admin untuk reset kata sandi</span>
                 </div>
 
                 {{-- Submit Button --}}

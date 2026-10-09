@@ -68,6 +68,9 @@
                             :error="$errors->first('nama_pengklaim')"
                         />
 
+                        <div class="rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
+                            Klaim diajukan atas nama <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->email }}).
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
                             <x-form-field
                                 type="tel"
@@ -75,17 +78,8 @@
                                 label="Nomor WhatsApp"
                                 placeholder="081234567890"
                                 required
-                                :value="old('whatsapp')"
+                                :value="old('whatsapp', auth()->user()->phone)"
                                 :error="$errors->first('whatsapp')"
-                            />
-                            <x-form-field
-                                type="email"
-                                name="email"
-                                label="Email Kampus"
-                                placeholder="budi.santoso@uny.ac.id"
-                                required
-                                :value="old('email')"
-                                :error="$errors->first('email')"
                             />
                         </div>
 

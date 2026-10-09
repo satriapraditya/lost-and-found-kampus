@@ -51,6 +51,13 @@
                         <span class="text-[11px] text-text-secondary">NIM. {{ auth()->user()->nim ?? '—' }}</span>
                     </div>
                 </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-small font-semibold text-text-secondary hover:text-primary">Keluar</button>
+                </form>
+                @if (auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.index') }}" class="text-small font-semibold text-primary">Admin</a>
+                @endif
             @else
                 {{-- Tampilan jika BELUM LOGIN (Tamu) --}}
                 <a href="{{ route('login') }}" class="flex items-center gap-2.5 p-1.5 -mr-1.5 rounded-lg hover:bg-surface-muted transition-colors cursor-pointer" title="Pergi ke halaman Login">

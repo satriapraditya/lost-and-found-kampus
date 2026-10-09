@@ -25,15 +25,18 @@
             <div class="flex flex-wrap items-center gap-2">
                 <span class="text-label font-semibold text-text-secondary">Kategori:</span>
                 @php
-                    $categories = ['semua' => 'Semua', 'elektronik' => 'Elektronik', 'dokumen' => 'Dokumen', 'aksesoris' => 'Aksesoris', 'pakaian' => 'Pakaian', 'lainnya' => 'Lainnya'];
                     $activeCategory = request('kategori', 'semua');
                 @endphp
-                @foreach ($categories as $key => $label)
+                <a
+                    href="{{ route('beranda', ['kategori' => 'semua']) }}"
+                    class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === 'semua' ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
+                >Semua</a>
+                @foreach ($categories as $category)
                     <a
-                        href="{{ route('beranda', ['kategori' => $key]) }}"
-                        class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === $key ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
+                        href="{{ route('beranda', ['kategori' => $category->name]) }}"
+                        class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === $category->name ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
                     >
-                        {{ $label }}
+                        {{ $category->name }}
                     </a>
                 @endforeach
             </div>

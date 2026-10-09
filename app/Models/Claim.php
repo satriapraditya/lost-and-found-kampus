@@ -30,4 +30,9 @@ class Claim extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function histories()
+    {
+        return $this->hasMany(ClaimHistory::class);
+    }
 }

@@ -64,3 +64,20 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Campus Find — Lost & Found Kampus
+
+### Menjalankan aplikasi
+
+1. Salin `.env.example` ke `.env`, atur koneksi database, lalu jalankan `php artisan key:generate`.
+2. Jalankan `php artisan migrate --seed` untuk membuat tabel dan kategori awal.
+3. Jalankan `php artisan storage:link` agar foto laporan dapat ditampilkan.
+4. Jalankan `php artisan serve` dan `npm run dev` saat pengembangan.
+
+Pendaftaran membuat akun dengan peran `user`. Untuk memberikan akses moderasi, ubah kolom `role` akun yang ditunjuk menjadi `admin` melalui proses administrasi database yang aman. Admin dapat membuka `/admin` untuk meninjau laporan dan klaim. Persetujuan klaim menandai barang sedang diklaim; setelah serah terima langsung, admin menandainya selesai.
+
+Pengguna harus masuk untuk membuat laporan, mengajukan klaim, dan melihat riwayatnya. Laporan baru berstatus menunggu sampai disetujui admin. Foto laporan disimpan di disk `public`; unggahan tidak disimpan sebagai blob database.
+
+### Pengujian
+
+Jalankan `php artisan test`. Test suite menggunakan SQLite in-memory dan membuat ulang schema secara terisolasi.

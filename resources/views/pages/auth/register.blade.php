@@ -31,28 +31,45 @@
                 <p class="mt-2 text-sm text-slate-500">Lengkapi data diri Anda untuk menggunakan layanan Lost & Found.</p>
             </div>
 
-            <form action="#" method="POST" class="space-y-5">
+            <form action="{{ route('register.store') }}" method="POST" class="space-y-5">
                 @csrf
                 
                 {{-- Nama Lengkap --}}
                 <div>
                     <label for="name" class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                    <input id="name" name="name" type="text" required placeholder="Masukkan nama lengkap" 
+                    <input id="name" name="name" type="text" value="{{ old('name') }}" required placeholder="Masukkan nama lengkap"
                            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- NIM / NIP --}}
                 <div>
                     <label for="nim" class="block text-sm font-semibold text-slate-700 mb-1">NIM / Nomor Induk Pegawai</label>
-                    <input id="nim" name="nim" type="text" required placeholder="Masukkan NIM atau NIP (Untuk Admin/Dosen)" 
+                    <input id="nim" name="nim" type="text" value="{{ old('nim') }}" required placeholder="Masukkan NIM atau NIP (Untuk Admin/Dosen)"
                            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('nim')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="study_program" class="block text-sm font-semibold text-slate-700 mb-1">Program Studi</label>
+                    <input id="study_program" name="study_program" type="text" value="{{ old('study_program') }}" required placeholder="Masukkan program studi"
+                           class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('study_program')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="phone" class="block text-sm font-semibold text-slate-700 mb-1">Nomor WhatsApp</label>
+                    <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required maxlength="20" placeholder="08xxxxxxxxxx"
+                           class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('phone')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Email Institusi --}}
                 <div>
                     <label for="email" class="block text-sm font-semibold text-slate-700 mb-1">Email Institusi / Kampus</label>
-                    <input id="email" name="email" type="email" required placeholder="mahasiswa@kampus.ac.id" 
+                    <input id="email" name="email" type="email" value="{{ old('email') }}" required placeholder="mahasiswa@kampus.ac.id"
                            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                    @error('email')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Password Grid --}}
@@ -60,8 +77,9 @@
                     <div>
                         <label for="password" class="block text-sm font-semibold text-slate-700 mb-1">Kata Sandi</label>
                         <div class="relative">
-                            <input id="password" name="password" type="password" required placeholder="Buat kata sandi" 
+                            <input id="password" name="password" type="password" required minlength="8" placeholder="Buat kata sandi"
                                    class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
+                            @error('password')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
                     <div>
@@ -76,9 +94,10 @@
                 {{-- Syarat & Ketentuan --}}
                 <div class="pt-2">
                     <label class="flex items-start gap-3">
-                        <input type="checkbox" name="terms" required class="mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+                        <input type="checkbox" name="terms" value="1" required class="mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
                         <span class="text-sm text-slate-600 leading-relaxed">Saya menyetujui Syarat & Ketentuan Penggunaan Sistem Lost & Found Kampus</span>
                     </label>
+                    @error('terms')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Submit Button --}}
