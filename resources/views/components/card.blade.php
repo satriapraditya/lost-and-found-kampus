@@ -13,7 +13,7 @@
     $ringClass = $variant === 'selected' ? 'ring-2 ring-primary' : '';
 @endphp
 
-<div class="flex flex-col overflow-hidden rounded-lg border border-border bg-white shadow-card {{ $ringClass }} {{ $isUnavailable ? 'opacity-75' : '' }}">
+<div class="flex flex-col overflow-hidden rounded-lg border border-border bg-surface-white shadow-card {{ $ringClass }} {{ $isUnavailable ? 'opacity-75' : '' }}">
     <div class="h-[200px] w-full bg-surface-muted">
         @if ($imageUrl)
             <img src="{{ $imageUrl }}" alt="{{ $title }}" class="h-full w-full object-cover" />

@@ -33,7 +33,7 @@
             <div class="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
 
                 {{-- Panel laporan --}}
-                <div data-panel="laporan" class="flex flex-col gap-4 rounded-lg border border-border bg-white p-5 shadow-card md:flex md:p-6">
+                <div data-panel="laporan" class="flex flex-col gap-4 rounded-lg border border-border bg-surface-white p-5 shadow-card md:flex md:p-6">
                     <div class="flex items-center justify-between gap-3">
                         <h2 class="text-card-title font-bold text-text">Laporan Temuan Saya</h2>
                         <span class="text-caption text-text-muted">Terakhir diperbarui hari ini</span>
@@ -67,7 +67,7 @@
                 </div>
 
                 {{-- Panel klaim --}}
-                <div data-panel="klaim" class="hidden flex flex-col gap-4 rounded-lg border border-border bg-white p-5 shadow-card md:flex md:p-6">
+                <div data-panel="klaim" class="hidden flex flex-col gap-4 rounded-lg border border-border bg-surface-white p-5 shadow-card md:flex md:p-6">
                     <div class="flex items-center justify-between gap-3">
                         <h2 class="text-card-title font-bold text-text">Permohonan Klaim Saya</h2>
                         <span class="text-caption text-text-muted">Dalam proses verifikasi</span>

@@ -12,7 +12,7 @@
                 <span class="font-semibold text-primary">{{ $item->title }}</span>
             </nav>
 
-            <div class="flex gap-8 rounded-[20px] border border-border bg-white p-8 shadow-card">
+            <div class="flex gap-8 rounded-[20px] border border-border bg-surface-white p-8 shadow-card">
 
                 {{-- Kolom foto --}}
                 <div class="flex flex-1 flex-col gap-4">

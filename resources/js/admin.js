@@ -14,6 +14,7 @@ import {
     Legend,
     Tooltip,
 } from 'chart.js';
+import { currentTheme, initThemeToggle } from './theme';
 
 Chart.register(
     BarController, BarElement, LineController, LineElement, PointElement,
@@ -56,8 +57,6 @@ const PALETTES = {
         ink: { text: '#d1d5db', muted: '#9ca3af', grid: '#1f2937', axis: '#273244', surface: '#111827', tooltip: '#000000' },
     },
 };
-
-const currentTheme = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
 Chart.defaults.font.family = 'Inter, ui-sans-serif, system-ui, sans-serif';
 Chart.defaults.font.size = 12;
@@ -203,19 +202,5 @@ function renderCharts() {
 
 renderCharts();
 
-/* ==========================================================
-   Mode gelap / terang
-   Tema awal sudah dipasang oleh skrip kecil di <head> layout admin.
-   ========================================================== */
-document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-
-    try {
-        localStorage.setItem('admin-theme', next);
-    } catch (e) {
-        // Mode privat / penyimpanan diblokir: tema tetap berganti, hanya tidak diingat
-    }
-
-    renderCharts();
-});
+// Mode gelap / terang (lihat theme.js) — grafik digambar ulang dengan palet tema baru
+initThemeToggle(renderCharts);

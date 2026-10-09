@@ -1,4 +1,4 @@
-<footer class="w-full border-t border-border bg-white">
+<footer class="w-full border-t border-border bg-surface-white">
     <div class="mx-auto flex max-w-[1440px] flex-col gap-6 px-20 pb-10 pt-12">
         <div class="flex items-start justify-between">
             <div class="flex w-[360px] flex-col gap-3">

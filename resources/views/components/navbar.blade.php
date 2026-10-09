@@ -6,7 +6,7 @@
     ];
 @endphp
 
-<header class="w-full border-b border-border bg-white">
+<header class="w-full border-b border-border bg-surface-white">
     <div class="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-20">
         <a href="{{ route('beranda') }}" class="flex items-center gap-2.5">
             <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
@@ -37,6 +37,8 @@
         </nav>
 
        <div class="flex items-center gap-4">
+            <x-theme-toggle />
+
             @auth
                 {{-- Tampilan jika USER SUDAH LOGIN --}}
                 <button type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-muted" aria-label="Notifikasi">

@@ -90,7 +90,7 @@ body {
 
 /* ==========================================================
    Mode gelap — aktif kalau <html data-theme="dark">.
-   Saat ini hanya dipakai area admin (tombol di topbar admin).
+   Dipakai situs publik & area admin (tombol <x-theme-toggle />).
    Cukup ganti nilai token; class Tailwind tidak perlu "dark:".
    ========================================================== */
 [data-theme="dark"] {

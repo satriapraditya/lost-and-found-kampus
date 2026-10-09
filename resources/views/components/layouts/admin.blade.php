@@ -18,18 +18,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }} — Admin Campus Find</title>
-    <script>
-        // Pasang tema sebelum halaman digambar supaya tidak berkedip putih.
-        // Pilihan tersimpan di localStorage; kalau belum pernah memilih, ikut pengaturan sistem.
-        (function () {
-            var theme = null;
-            try { theme = localStorage.getItem('admin-theme'); } catch (e) {}
-            if (theme !== 'light' && theme !== 'dark') {
-                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.dataset.theme = theme;
-        })();
-    </script>
+    <x-theme-script />
     @vite(['resources/css/app.css', 'resources/js/admin.js'])
 </head>
 <body class="min-h-screen bg-surface text-text antialiased">
@@ -49,17 +38,7 @@
             </p>
 
             <div class="flex items-center gap-2">
-                <button
-                    type="button"
-                    data-theme-toggle
-                    class="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted"
-                    aria-label="Ganti mode gelap/terang"
-                    title="Ganti mode gelap/terang"
-                >
-                    {{-- Yang tampil adalah tujuan: bulan saat terang, matahari saat gelap --}}
-                    <x-admin.icon name="moon" class="h-5 w-5 shrink-0 dark:hidden" />
-                    <x-admin.icon name="sun" class="hidden h-5 w-5 shrink-0 dark:block" />
-                </button>
+                <x-theme-toggle />
 
                 {{-- TODO (Adit): sambungkan ke notifikasi admin --}}
                 <button type="button" class="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted" aria-label="Notifikasi">
