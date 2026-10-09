@@ -1,44 +1,51 @@
+// Warna token dari variabel CSS, contoh token("primary") → rgb(var(--rgb-primary) / <alpha-value>)
+const token = (name) => `rgb(var(--rgb-${name}) / <alpha-value>)`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
+  // Varian dark: aktif saat <html data-theme="dark"> (lihat layout admin)
+  darkMode: ["selector", '[data-theme="dark"]'],
   content: [
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
   ],
   theme: {
     extend: {
+      // Nilai warnanya ada di resources/css/app.css (:root = terang,
+      // [data-theme="dark"] = gelap). Di sini hanya merujuk ke variabelnya.
       colors: {
         primary: {
-          DEFAULT: "#7c3aed",
-          hover: "#6d28d9",
+          DEFAULT: token("primary"),
+          hover: token("primary-hover"),
         },
         text: {
-          DEFAULT: "#111827",
-          secondary: "#4b5563",
-          muted: "#9ca3af",
+          DEFAULT: token("text"),
+          secondary: token("text-secondary"),
+          muted: token("text-muted"),
         },
         surface: {
-          DEFAULT: "#f9fafb",
-          white: "#ffffff",
-          muted: "#f3f4f6",
+          DEFAULT: token("surface"),
+          white: token("surface-white"),
+          muted: token("surface-muted"),
         },
         border: {
-          DEFAULT: "#e5e7eb",
+          DEFAULT: token("border"),
         },
         success: {
-          bg: "#d1fae5",
-          text: "#065f46",
+          bg: token("success-bg"),
+          text: token("success-text"),
         },
         danger: {
-          bg: "#fee2e2",
-          text: "#991b1b",
+          bg: token("danger-bg"),
+          text: token("danger-text"),
         },
         warning: {
-          bg: "#fef3c7",
-          text: "#92400e",
+          bg: token("warning-bg"),
+          text: token("warning-text"),
         },
         info: {
-          bg: "#dbeafe",
-          text: "#1e40af",
+          bg: token("info-bg"),
+          text: token("info-text"),
         },
       },
       fontSize: {
@@ -61,7 +68,7 @@ export default {
         full: "999px",
       },
       boxShadow: {
-        card: "0px 4px 12px 0px rgba(0,0,0,0.03)",
+        card: "var(--shadow-card)",
       },
       spacing: {
         4.5: "18px",
