@@ -1,7 +1,7 @@
 <x-layouts.app title="Beranda" active="beranda">
 
     {{-- Hero + Search + Filter --}}
-    <section class="w-full border-b border-border bg-white px-20 pb-10 pt-14">
+    <section class="w-full border-b border-border bg-surface-white px-20 pb-10 pt-14">
         <div class="mx-auto flex max-w-[1280px] flex-col gap-6">
             <div class="flex max-w-[720px] flex-col gap-3">
                 <h1 class="text-hero font-extrabold leading-tight text-text">Temukan Kembali Barang Anda yang Hilang</h1>
@@ -31,7 +31,7 @@
                 @foreach ($categories as $key => $label)
                     <a
                         href="{{ route('beranda', ['kategori' => $key]) }}"
-                        class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === $key ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
+                        class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === $key ? 'bg-primary text-white' : 'border border-border bg-surface-white text-text-secondary hover:bg-surface-muted' }}"
                     >
                         {{ $label }}
                     </a>

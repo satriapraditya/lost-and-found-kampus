@@ -29,7 +29,7 @@
                     </p>
                 </div>
 
-                <div class="flex flex-col gap-6 rounded-lg border border-border bg-white p-8 shadow-card">
+                <div class="flex flex-col gap-6 rounded-lg border border-border bg-surface-white p-8 shadow-card">
                     <div class="flex flex-col gap-1">
                         <h1 class="text-[22px] font-extrabold text-text">Ajukan Klaim Kepemilikan</h1>
                         <p class="text-label text-text-secondary">
