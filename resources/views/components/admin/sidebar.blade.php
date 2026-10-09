@@ -9,13 +9,13 @@
             ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'home'],
         ],
         'Barang' => [
-            ['label' => 'Barang Hilang', 'route' => 'admin.lost.index', 'icon' => 'search'],    // Ahmad
-            ['label' => 'Barang Temuan', 'route' => 'admin.found.index', 'icon' => 'box'],      // Ahmad
-            ['label' => 'Verifikasi Klaim', 'route' => 'admin.claims.index', 'icon' => 'check'], // Adit
+            ['label' => 'Barang Hilang', 'route' => 'admin.lost.index', 'icon' => 'search'],
+            ['label' => 'Barang Temuan', 'route' => 'admin.found.index', 'icon' => 'box'],
+            ['label' => 'Verifikasi Klaim', 'route' => 'admin.claims.index', 'icon' => 'check'],
         ],
         'Administrator' => [
-            ['label' => 'Kelola Admin', 'route' => 'admin.admins.index', 'icon' => 'shield'],   // Arsha
-            ['label' => 'Daftar User', 'route' => 'admin.users.index', 'icon' => 'users'],      // Arsha
+            ['label' => 'Kelola Admin', 'route' => 'admin.admins.index', 'icon' => 'shield'],
+            ['label' => 'Daftar User', 'route' => 'admin.users.index', 'icon' => 'users'],
             ['label' => 'Statistik & Laporan', 'route' => 'admin.statistics', 'icon' => 'chart'],
         ],
     ];

@@ -10,7 +10,7 @@
 ])
 
 @php
-    $inputBase = 'w-full rounded-sm border bg-white px-4 py-3 text-label text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
+    $inputBase = 'w-full rounded-sm border bg-surface-white px-4 py-3 text-label text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors';
     $borderClass = $error ? 'border-danger-text' : 'border-border';
 @endphp
 

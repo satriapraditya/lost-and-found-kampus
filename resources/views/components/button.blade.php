@@ -1,5 +1,5 @@
 @props([
-    'variant' => 'primary', // primary | secondary | ghost
+    'variant' => 'primary', // primary | secondary | ghost | danger
     'href' => null,
     'type' => 'button',
     'disabled' => false,
@@ -12,6 +12,7 @@
         'primary' => 'bg-primary text-white hover:bg-primary-hover disabled:bg-border disabled:text-text-muted',
         'secondary' => 'bg-surface-white text-text-secondary border border-border hover:bg-surface-muted disabled:opacity-50',
         'ghost' => 'bg-transparent text-primary hover:bg-surface-muted disabled:text-text-muted',
+        'danger' => 'bg-surface-white text-danger-text border border-danger-text/30 hover:bg-danger-bg disabled:opacity-50',
     ];
 
     $classes = $base . ' ' . ($variants[$variant] ?? $variants['primary']);
