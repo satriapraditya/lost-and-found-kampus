@@ -107,7 +107,7 @@ Route::post('/lapor-temuan', function () {
 Route::get('/riwayat', function () {
     $user = auth()->user();
 
-    if (! $user) {
+if (! $user) {
         return view('pages.riwayat', ['reports' => collect(), 'claims' => collect()]);
     }
 
@@ -150,6 +150,10 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('pages.auth.register');
 })->name('register');
+// Rute Login Admin (Mockup UI)
+Route::get('/admin/login', function () {
+    return view('pages.admin.login');
+})->name('admin.login');
 /*
 |--------------------------------------------------------------------------
 | Area Admin — Layout, Dashboard & Statistik (Yosi)
