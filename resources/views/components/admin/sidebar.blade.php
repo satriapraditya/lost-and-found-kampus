@@ -27,8 +27,12 @@
 >
     <div class="flex h-[72px] items-center justify-between gap-2.5 border-b border-border px-5">
         <a href="{{ route('admin.index') }}" class="flex items-center gap-2.5">
-            <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
-                <span class="text-white text-lg" aria-hidden="true">🔍</span>
+            <div class="flex h-20 w-20 items-center justify-center rounded-md ">
+                <img
+                    src="{{ asset('images/logo_lostandfound.png') }}"
+                    alt="Logo Campus Find"
+                    class="h-20 w-20 object-contain"
+                >
             </div>
             <div class="flex flex-col leading-tight">
                 <span class="text-h3 font-extrabold text-text">Campus Find</span>

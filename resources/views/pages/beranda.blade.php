@@ -9,7 +9,7 @@
                     Temukan Kembali Barang Anda yang Hilang
                 </h1>
 
-                <p class="text-body leading-relaxed text-text-secondary">
+                <p class="text-body leading-relaxed text-text-secondary text-justify">
                     Campus Find adalah layanan lost &amp; found digital untuk seluruh
                     civitas akademika. Kehilangan barang di kampus? Cari di daftar
                     barang temuan, atau laporkan barang yang Anda temukan lengkap
@@ -183,7 +183,7 @@
                 Cara kerja sistem
             </h2>
 
-            <ol class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <ol class="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 @foreach ($steps as $i => $step)
                     <li class="flex flex-col gap-3 rounded-lg border border-border bg-surface-white p-6">
                         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-label font-bold text-white" aria-hidden="true">
