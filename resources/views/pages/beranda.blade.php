@@ -10,9 +10,12 @@
                 </h1>
 
                 <p class="text-body leading-relaxed text-text-secondary">
-                    Layanan Lost &amp; Found digital untuk melacak, melaporkan,
-                    dan mengklaim barang temuan di seluruh area kampus secara
-                    aman dan terverifikasi.
+                    Campus Find adalah layanan lost &amp; found digital untuk seluruh
+                    civitas akademika. Kehilangan barang di kampus? Cari di daftar
+                    barang temuan, atau laporkan barang yang Anda temukan lengkap
+                    dengan foto dan lokasinya. Setiap laporan ditinjau admin terlebih
+                    dahulu, dan barang hanya diserahkan kepada pemilik yang berhasil
+                    membuktikan kepemilikannya, sehingga prosesnya aman dan terverifikasi.
                 </p>
             </div>
 
@@ -161,6 +164,40 @@
                 </nav>
             @endif
 
+        </div>
+    </section>
+
+    {{-- Cara kerja sistem --}}
+    @php
+        $steps = [
+            ['title' => 'Lapor barang', 'text' => 'Unggah foto dan informasi barang temuan, lengkap dengan lokasi dan tanggal penemuan.'],
+            ['title' => 'Verifikasi admin', 'text' => 'Admin memeriksa laporan. Yang sesuai ditampilkan di beranda, yang kurang jelas dikembalikan untuk diperbaiki.'],
+            ['title' => 'Cari dan identifikasi', 'text' => 'Siapa saja bisa mencari barang lewat kata kunci dan kategori, lalu melihat detailnya.'],
+            ['title' => 'Klaim dan serah terima', 'text' => 'Pemilik mengisi ciri khusus barang untuk diverifikasi, lalu barang diserahkan secara langsung.'],
+        ];
+    @endphp
+
+    <section class="w-full px-20 pb-12" aria-labelledby="cara-kerja">
+        <div class="mx-auto flex max-w-[1280px] flex-col gap-6">
+            <h2 id="cara-kerja" class="text-center text-h2 font-bold text-text">
+                Cara kerja sistem
+            </h2>
+
+            <ol class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($steps as $i => $step)
+                    <li class="flex flex-col gap-3 rounded-lg border border-border bg-surface-white p-6">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-label font-bold text-white" aria-hidden="true">
+                            {{ $i + 1 }}
+                        </span>
+                        <h3 class="text-card-title font-bold text-text">
+                            <span class="sr-only">Langkah {{ $i + 1 }}: </span>{{ $step['title'] }}
+                        </h3>
+                        <p class="text-small leading-relaxed text-text-secondary">
+                            {{ $step['text'] }}
+                        </p>
+                    </li>
+                @endforeach
+            </ol>
         </div>
     </section>
 
