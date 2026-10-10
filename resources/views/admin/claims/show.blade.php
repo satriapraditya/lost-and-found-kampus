@@ -12,7 +12,8 @@
     $reportRoute = $report->type === 'lost' ? 'admin.lost.show' : 'admin.found.show';
     $card = 'flex flex-col gap-4 rounded-lg border border-border bg-surface-white p-5 shadow-card md:p-6';
     $textareaClass = 'w-full resize-none rounded-sm border border-border bg-surface-white px-3 py-2.5 text-small text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20';
-    $whatsapp = $claim->whatsapp ? preg_replace('/^0/', '62', preg_replace('/\D/', '', $claim->whatsapp)) : null;
+    $phone = $claim->whatsapp ?: $claim->user?->phone; // nomor di form klaim, atau nomor di akun
+    $whatsapp = $phone ? preg_replace('/^0/', '62', preg_replace('/\D/', '', $phone)) : null;
 @endphp
 
 <x-layouts.admin title="Verifikasi Klaim" :subtitle="'Klaim untuk ' . $report->item_name . ' · diajukan ' . $claim->created_at->locale('id')->diffForHumans()">
@@ -98,6 +99,23 @@
                     @endforeach
                 </section>
             @endif
+
+            @if ($claim->histories->isNotEmpty())
+                <section class="{{ $card }}">
+                    <h2 class="text-card-title font-bold text-text">Riwayat</h2>
+                    <ol class="flex flex-col gap-3 border-l-2 border-border pl-4">
+                        @foreach ($claim->histories as $history)
+                            <li class="text-small">
+                                <p class="font-semibold text-text">{{ ClaimController::STATUSES[$history->status] ?? $history->status }}</p>
+                                @if ($history->note)
+                                    <p class="text-text-secondary">{{ $history->note }}</p>
+                                @endif
+                                <p class="text-caption text-text-muted">{{ $history->user->name ?? '—' }} · {{ $history->created_at->locale('id')->translatedFormat('d M Y, H:i') }}</p>
+                            </li>
+                        @endforeach
+                    </ol>
+                </section>
+            @endif
         </div>
 
         <div class="flex flex-col gap-6">
@@ -105,32 +123,35 @@
             <section class="{{ $card }}">
                 <h2 class="text-card-title font-bold text-text">Tindakan</h2>
 
+                {{-- Semua tombol diproses AdminController@updateClaim (status + note) --}}
                 @if ($claim->status === 'pending')
-                    @if ($report->status !== 'approved')
+                    @if ($report->status === 'approved')
+                        <details class="rounded-md border border-border" open>
+                            <summary class="cursor-pointer list-none px-4 py-2.5 text-center text-label font-semibold text-primary">Setujui Klaim</summary>
+                            <form method="POST" action="{{ route('admin.claims.update', $claim) }}" class="flex flex-col gap-3 border-t border-border p-4">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="approved">
+                                <label for="approve_note" class="text-small font-semibold text-text-secondary">Catatan untuk pengklaim (opsional)</label>
+                                <textarea id="approve_note" name="note" rows="2" class="{{ $textareaClass }}" placeholder="Contoh: Ambil di pos satpam Gedung A, jam 08.00–16.00."></textarea>
+                                <x-button type="submit" variant="primary" class="w-full">Setujui</x-button>
+                            </form>
+                        </details>
+                    @else
                         <p class="rounded-md bg-warning-bg px-4 py-3 text-small text-warning-text">
-                            Status laporan barang ini <strong>{{ ReportStatistics::STATUSES[$report->status] ?? $report->status }}</strong>. Pastikan barang memang masih tersedia.
+                            Klaim belum bisa disetujui karena status laporan barang ini <strong>{{ ReportStatistics::STATUSES[$report->status] ?? $report->status }}</strong>, bukan Disetujui.
                         </p>
                     @endif
 
-                    <details class="rounded-md border border-border" open>
-                        <summary class="cursor-pointer list-none px-4 py-2.5 text-center text-label font-semibold text-primary">Setujui Klaim</summary>
-                        <form method="POST" action="{{ route('admin.claims.approve', $claim) }}" class="flex flex-col gap-3 border-t border-border p-4">
-                            @csrf
-                            @method('PATCH')
-                            <label for="approve_note" class="text-small font-semibold text-text-secondary">Catatan untuk pengklaim (opsional)</label>
-                            <textarea id="approve_note" name="admin_note" rows="2" class="{{ $textareaClass }}" placeholder="Contoh: Ambil di pos satpam Gedung A, jam 08.00–16.00."></textarea>
-                            <x-button type="submit" variant="primary" class="w-full">Setujui</x-button>
-                        </form>
-                    </details>
-
-                    <details class="rounded-md border border-border" @if ($errors->has('admin_note')) open @endif>
+                    <details class="rounded-md border border-border" @if ($errors->has('note')) open @endif>
                         <summary class="cursor-pointer list-none px-4 py-2.5 text-center text-label font-semibold text-danger-text">Tolak Klaim…</summary>
-                        <form method="POST" action="{{ route('admin.claims.reject', $claim) }}" class="flex flex-col gap-3 border-t border-border p-4">
+                        <form method="POST" action="{{ route('admin.claims.update', $claim) }}" class="flex flex-col gap-3 border-t border-border p-4">
                             @csrf
                             @method('PATCH')
+                            <input type="hidden" name="status" value="rejected">
                             <label for="reject_note" class="text-small font-semibold text-text-secondary">Alasan penolakan</label>
-                            <textarea id="reject_note" name="admin_note" rows="3" required class="{{ $textareaClass }}" placeholder="Contoh: Ciri-ciri yang disebutkan tidak cocok dengan barang.">{{ old('admin_note') }}</textarea>
-                            @error('admin_note')
+                            <textarea id="reject_note" name="note" rows="3" required minlength="5" class="{{ $textareaClass }}" placeholder="Contoh: Ciri-ciri yang disebutkan tidak cocok dengan barang.">{{ old('note') }}</textarea>
+                            @error('note')
                                 <p class="text-small text-danger-text">{{ $message }}</p>
                             @enderror
                             <x-button type="submit" variant="danger" class="w-full">Kirim Penolakan</x-button>
@@ -138,9 +159,10 @@
                     </details>
                 @elseif ($claim->status === 'approved')
                     <p class="text-small text-text-secondary">Klaim disetujui. Setelah barang diserahkan langsung ke pengklaim, tandai selesai.</p>
-                    <form method="POST" action="{{ route('admin.claims.complete', $claim) }}" onsubmit="return confirm('Tandai barang sudah diserahkan ke pengklaim?')">
+                    <form method="POST" action="{{ route('admin.claims.update', $claim) }}" onsubmit="return confirm('Tandai barang sudah diserahkan ke pengklaim?')">
                         @csrf
                         @method('PATCH')
+                        <input type="hidden" name="status" value="completed">
                         <x-button type="submit" variant="primary" class="w-full">Barang Sudah Diserahkan</x-button>
                     </form>
                 @elseif ($claim->status === 'completed')
@@ -167,7 +189,7 @@
                         <a href="mailto:{{ $claim->user->email }}" class="truncate text-primary hover:underline">{{ $claim->user->email }}</a>
                     @endif
                     @if ($whatsapp)
-                        <a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener" class="text-primary hover:underline">WhatsApp {{ $claim->whatsapp }}</a>
+                        <a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener" class="text-primary hover:underline">WhatsApp {{ $phone }}</a>
                     @endif
                 </div>
             </section>

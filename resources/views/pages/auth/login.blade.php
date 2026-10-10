@@ -116,6 +116,12 @@
             <form action="#" method="POST" class="space-y-5">
                 @csrf
 
+                @if ($errors->any())
+                    <div role="alert" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
 
                 {{-- Menyimpan jenis akun --}}
                 <input
@@ -129,7 +135,7 @@
                 {{-- Email / NIM --}}
                 <div>
                     <label for="identifier" class="block text-sm font-semibold text-slate-700 mb-1">Email Kampus / NIM</label>
-                    <input id="identifier" name="identifier" type="text" required placeholder="mahasiswa@kampus.ac.id atau 240511..." 
+                    <input id="identifier" name="identifier" type="text" value="{{ old('identifier') }}" required placeholder="mahasiswa@kampus.ac.id atau 240511..." 
                            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500">
                 </div>
 
@@ -391,6 +397,11 @@
             }
 
         }
+
+        // Setelah gagal login, buka lagi tab yang tadi dipilih
+        @if (old('role') === 'admin')
+            switchRole('admin');
+        @endif
 
     </script>
 
