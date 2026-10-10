@@ -37,11 +37,41 @@
 
         <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p class="text-small text-text-muted">© {{ date('Y') }} Campus Find Universitas. Hak Cipta Dilindungi Undang-Undang.</p>
-            <div class="flex gap-4 text-text-muted">
-                <span aria-hidden="true">IG</span>
-                <span aria-hidden="true">TW</span>
-                <span aria-hidden="true">FB</span>
-            </div>
+<div class="flex gap-4 text-text-muted">
+    {{-- Instagram --}}
+    <a
+        href="https://www.instagram.com/fbiyaaldn?srtk=NDNnanN4a2sxNzI0&utm_source=qr"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram Campus Find"
+        class="transition hover:text-primary"
+    >
+        IG
+    </a>
+
+    {{-- Twitter / X --}}
+    <a
+        href="https://x.com/USERNAME_TWITTER"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Twitter Campus Find"
+        class="transition hover:text-primary"
+    >
+        TW
+    </a>
+
+    {{-- Facebook --}}
+    <a
+        href="https://www.facebook.com/USERNAME_FACEBOOK/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook Campus Find"
+        class="transition hover:text-primary"
+    >
+        FB
+    </a>
+</div>
+```
         </div>
     </div>
 </footer>
