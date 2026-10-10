@@ -66,7 +66,7 @@
                     @if ($activeCategory === 'semua')
                         aria-current="page"
                     @endif
-                    class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === 'semua' ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
+                    class="rounded-full px-4 py-2 text-small font-semibold {{ $activeCategory === 'semua' ? 'bg-primary text-white' : 'border border-border bg-surface-white text-text-secondary hover:bg-surface-muted' }}"
                 >
                     Semua
                 </a>
@@ -85,7 +85,7 @@
                         @if ($isActive)
                             aria-current="page"
                         @endif
-                        class="rounded-full px-4 py-2 text-small font-semibold {{ $isActive ? 'bg-primary text-white' : 'border border-border bg-white text-text-secondary hover:bg-surface-muted' }}"
+                        class="rounded-full px-4 py-2 text-small font-semibold {{ $isActive ? 'bg-primary text-white' : 'border border-border bg-surface-white text-text-secondary hover:bg-surface-muted' }}"
                     >
                         {{ $category->name }}
                     </a>
