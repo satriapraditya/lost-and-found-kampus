@@ -1,11 +1,11 @@
 <x-layouts.app title="Beranda" active="beranda">
 
     {{-- Hero + Search + Filter --}}
-    <section class="w-full border-b border-border bg-surface-white px-20 pb-10 pt-14">
+    <section class="w-full border-b border-border bg-surface-white px-4 pb-8 pt-8 sm:px-8 sm:pt-10 lg:px-20 lg:pb-10 lg:pt-14">
         <div class="mx-auto flex max-w-[1280px] flex-col gap-6">
 
             <div class="flex max-w-[720px] flex-col gap-3">
-                <h1 class="text-hero font-extrabold leading-tight text-text">
+                <h1 class="text-[28px] font-extrabold sm:text-hero leading-tight text-text">
                     Temukan Kembali Barang Anda yang Hilang
                 </h1>
 
@@ -23,7 +23,7 @@
             <form
                 method="GET"
                 action="{{ route('beranda') }}"
-                class="flex h-14 w-full max-w-[800px] items-center gap-3 rounded-lg border border-border bg-surface px-5"
+                class="flex h-14 w-full max-w-[800px] items-center gap-2 rounded-lg border border-border bg-surface pl-4 pr-2 sm:gap-3 sm:px-5"
             >
                 <input
                     type="hidden"
@@ -39,7 +39,7 @@
                     value="{{ request('q') }}"
                     placeholder='Cari barang (contoh: "Kunci", "iPhone", "Dompet")...'
                     aria-label="Cari barang"
-                    class="flex-1 bg-transparent text-body text-text placeholder:text-text-muted focus:outline-none"
+                    class="min-w-0 flex-1 bg-transparent text-body text-text placeholder:text-text-muted focus:outline-none"
                 />
 
                 <x-button type="submit" variant="primary">
@@ -96,10 +96,10 @@
     </section>
 
     {{-- Hasil pencarian --}}
-    <section class="w-full px-20 py-12">
+    <section class="w-full px-4 py-8 sm:px-8 sm:py-12 lg:px-20">
         <div class="mx-auto flex max-w-[1280px] flex-col gap-8">
 
-            <div class="flex items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 <h2 class="text-h2 font-bold text-text">
                     Semua Laporan Temuan Terbaru
                 </h2>
@@ -177,7 +177,7 @@
         ];
     @endphp
 
-    <section class="w-full px-20 pb-12" aria-labelledby="cara-kerja">
+    <section class="w-full px-4 pb-8 sm:px-8 sm:pb-12 lg:px-20" aria-labelledby="cara-kerja">
         <div class="mx-auto flex max-w-[1280px] flex-col gap-6">
             <h2 id="cara-kerja" class="text-center text-h2 font-bold text-text">
                 Cara kerja sistem
