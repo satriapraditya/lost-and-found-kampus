@@ -1,5 +1,5 @@
 <x-layouts.app title="Notifikasi">
-    <main class="mx-auto max-w-4xl space-y-6 px-4 py-10">
+    <div class="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-8 sm:py-10">
         <div>
             <h1 class="text-2xl font-bold text-text">Notifikasi</h1>
             <p class="mt-1 text-text-secondary">Pembaruan terkait laporan dan klaim Anda.</p>
@@ -11,8 +11,8 @@
 
         <div class="space-y-3">
             @forelse ($notifications as $notification)
-                <article class="flex items-start justify-between gap-4 rounded-lg border border-border {{ $notification->read_at ? 'bg-surface-white' : 'bg-primary/5' }} p-5">
-                    <div>
+                <article class="flex flex-col gap-3 rounded-lg sm:flex-row sm:items-start sm:justify-between sm:gap-4 border border-border {{ $notification->read_at ? 'bg-surface-white' : 'bg-primary/5' }} p-4 sm:p-5">
+                    <div class="min-w-0 break-words">
                         <h2 class="font-bold text-text">{{ $notification->title }}</h2>
                         <p class="mt-1 text-sm text-text-secondary">{{ $notification->message }}</p>
                         <time class="mt-2 block text-xs text-text-muted" datetime="{{ $notification->created_at->toIso8601String() }}">
@@ -35,5 +35,5 @@
         </div>
 
         {{ $notifications->links() }}
-    </main>
+    </div>
 </x-layouts.app>
