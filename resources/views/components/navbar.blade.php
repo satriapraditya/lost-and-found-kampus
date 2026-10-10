@@ -13,8 +13,12 @@
 <header class="relative w-full border-b border-border bg-surface-white">
     <div class="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-8 lg:px-20">
         <a href="{{ route('beranda') }}" class="flex shrink-0 items-center gap-2.5">
-            <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
-                <span class="text-white text-lg" aria-hidden="true">🔍</span>
+            <div class="flex h-20 w-20 items-center justify-center rounded-md  ">
+                <img
+    src="{{ asset('images/logo_lostandfound.png') }}"
+    alt="Logo Campus Find"
+    class="h-20 w-20 object-contain"
+>
             </div>
             <div class="flex flex-col leading-tight">
                 <span class="text-h3 font-extrabold text-text">Campus Find</span>
@@ -22,7 +26,7 @@
             </div>
         </a>
 
-        <nav class="hidden h-full items-center gap-8 lg:flex">
+        <nav class="hidden h-full items-center gap-12 lg:flex">
             @foreach ($links as $key => $link)
                 @php
                     // Mengecek apakah rute saat ini sama dengan rute pada menu

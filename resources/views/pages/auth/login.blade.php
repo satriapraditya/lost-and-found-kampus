@@ -13,7 +13,7 @@
 <body class="bg-slate-50 font-sans text-slate-900 antialiased">
 
     {{-- Navbar Minimal --}}
-    <header class="w-full border-b border-slate-200 bg-white">
+    <header class="w-full border-b border-slate-100 bg-white">
 
         <div
             class="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -25,14 +25,13 @@
             >
 
                 <div
-                    class="flex h-8 w-8 items-center justify-center rounded-md bg-violet-600"
+                    class="flex h-20 w-20 items-center justify-center rounded-md "
                 >
-                    <span
-                        class="text-white text-sm"
-                        aria-hidden="true"
-                    >
-                        🔍
-                    </span>
+                <img
+                    src="{{ asset('images/logo_lostandfound.png') }}"
+                    alt="Logo Campus Find"
+                    class="h-20 w-20 object-contain"
+                >
                 </div>
 
                 <span class="font-extrabold text-slate-900">
