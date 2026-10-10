@@ -8,6 +8,7 @@
     <section class="flex flex-col gap-5 rounded-lg border border-border bg-surface-white p-5 shadow-card md:p-6">
         <x-admin.status-tabs
             route="admin.claims.index"
+            :statuses="ClaimController::STATUSES"
             :counts="$statusCounts"
             :current="$filters['status'] ?? null"
             :query="['q' => $filters['q'] ?? null]"

@@ -6,7 +6,7 @@
     */
     $groups = [
         'Utama' => [
-            ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'home'],
+            ['label' => 'Dashboard', 'route' => 'admin.index', 'icon' => 'home', 'match' => ['admin.index', 'admin.queue']],
         ],
         'Barang' => [
             ['label' => 'Barang Hilang', 'route' => 'admin.lost.index', 'icon' => 'search'],
@@ -26,7 +26,7 @@
     class="fixed inset-y-0 left-0 z-40 flex w-[260px] -translate-x-full flex-col border-r border-border bg-surface-white transition-transform duration-200 lg:translate-x-0"
 >
     <div class="flex h-[72px] items-center justify-between gap-2.5 border-b border-border px-5">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
+        <a href="{{ route('admin.index') }}" class="flex items-center gap-2.5">
             <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary">
                 <span class="text-white text-lg" aria-hidden="true">🔍</span>
             </div>
@@ -48,8 +48,8 @@
                 @foreach ($items as $item)
                     @php
                         $exists = Route::has($item['route']);
-                        // Aktif juga untuk sub-halaman, misal admin.claims.show
-                        $isActive = $exists && request()->routeIs($item['route'], str_replace('.index', '', $item['route']) . '.*');
+                        // Aktif juga untuk sub-halaman, misal admin.claims.show (atau sesuai 'match')
+                        $isActive = $exists && request()->routeIs(...($item['match'] ?? [$item['route'], str_replace('.index', '', $item['route']) . '.*']));
                     @endphp
 
                     @if ($exists)

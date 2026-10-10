@@ -3,12 +3,11 @@
     'counts',             // jumlah per status: ['pending' => 3, ...]
     'current' => null,    // status yang sedang dipilih (null = semua)
     'query' => [],        // filter lain yang ikut dibawa saat pindah tab
+    'statuses' => \App\Services\ReportStatistics::STATUSES, // ['nilai' => 'Label'], default status laporan
 ])
 
 @php
-    use App\Services\ReportStatistics;
-
-    $tabs = ['' => 'Semua'] + ReportStatistics::STATUSES;
+    $tabs = ['' => 'Semua'] + $statuses;
 @endphp
 
 <nav class="flex gap-1 overflow-x-auto border-b border-border" aria-label="Filter status">

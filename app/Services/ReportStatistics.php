@@ -16,7 +16,8 @@ use Illuminate\Support\Collection;
 |
 | Kesepakatan nilai kolom (dipakai juga oleh fitur Ahmad & Adit):
 |   reports.type   : 'lost' (barang hilang) | 'found' (barang temuan)
-|   reports.status : 'pending' | 'approved' | 'rejected' | 'completed'
+|   reports.status : 'pending' | 'approved' | 'rejected' | 'claimed' | 'completed'
+|                    (claimed = klaim sudah disetujui, barang belum diserahkan)
 |   claims.status  : 'pending' | 'approved' | 'rejected' | 'completed'
 */
 class ReportStatistics
@@ -30,6 +31,7 @@ class ReportStatistics
         'pending' => 'Menunggu',
         'approved' => 'Disetujui',
         'rejected' => 'Ditolak',
+        'claimed' => 'Diklaim',
         'completed' => 'Selesai',
     ];
 
@@ -38,7 +40,8 @@ class ReportStatistics
         'pending' => 'menunggu',
         'approved' => 'tersedia',
         'rejected' => 'ditolak',
-        'completed' => 'diklaim',
+        'claimed' => 'diklaim',
+        'completed' => 'selesai',
     ];
 
     private const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];

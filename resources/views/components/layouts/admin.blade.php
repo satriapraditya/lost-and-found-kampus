@@ -40,12 +40,13 @@
             <div class="flex items-center gap-2">
                 <x-theme-toggle />
 
-                {{-- TODO (Adit): sambungkan ke notifikasi admin --}}
-                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted" aria-label="Notifikasi">
+                <a href="{{ route('notifications.index') }}" class="relative flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted" aria-label="Notifikasi">
                     <x-admin.icon name="bell" />
-                </button>
+                    @if (auth()->user()?->notifications()->whereNull('read_at')->exists())
+                        <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-danger-text"></span>
+                    @endif
+                </a>
 
-                {{-- TODO (Arsha): menu profil & logout --}}
                 <div class="flex items-center gap-2.5 rounded-lg p-1.5">
                     <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-small font-bold text-white">
                         {{ strtoupper(mb_substr(auth()->user()->name ?? 'Admin', 0, 1)) }}
@@ -55,6 +56,13 @@
                         <span class="text-[11px] text-text-secondary">Administrator</span>
                     </div>
                 </div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted hover:text-danger-text" aria-label="Keluar" title="Keluar">
+                        <x-admin.icon name="logout" />
+                    </button>
+                </form>
             </div>
         </header>
 

@@ -9,6 +9,7 @@ use App\Models\Report;
 use App\Models\ReportHistory;
 use App\Services\ReportStatistics;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -16,7 +17,10 @@ use Illuminate\Support\Facades\Storage;
 | (reports), dibedakan kolom type — rute admin.lost.* mengirim type 'lost',
 | admin.found.* mengirim type 'found'.
 |
-| Alur status: pending → approved / rejected, lalu approved → completed.
+| Alur status: pending → approved / rejected (AdminController@updateReport,
+| rute admin.reports.update), lalu approved → completed (method complete di
+| sini). Barang temuan yang klaimnya disetujui menjadi 'claimed' dan selesai
+| lewat halaman Verifikasi Klaim.
 */
 class ReportController extends Controller
 {
@@ -68,59 +72,44 @@ class ReportController extends Controller
         return view('admin.reports.show', compact('report', 'type'));
     }
 
-    public function approve(Report $report)
+    /*
+    | Tandai selesai untuk laporan yang sudah tayang tanpa lewat klaim,
+    | misalnya barang hilang yang sudah ditemukan pemiliknya sendiri.
+    */
+    public function complete(Request $request, Report $report)
     {
-        if ($report->status !== 'pending') {
-            return back()->with('error', 'Hanya laporan berstatus Menunggu yang bisa disetujui.');
-        }
+        $completed = DB::transaction(function () use ($request, $report) {
+            $report = Report::whereKey($report->id)->lockForUpdate()->firstOrFail();
 
-        $report->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-            'rejection_reason' => null,
-        ]);
+            if ($report->status !== 'approved') {
+                return false;
+            }
 
-        $this->record($report, 'Laporan disetujui dan ditampilkan di situs.');
-        $this->notify($report, 'Laporan disetujui', "Laporan \"{$report->item_name}\" sudah disetujui admin dan tampil di situs.");
+            $report->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+            ]);
 
-        return back()->with('success', 'Laporan disetujui.');
-    }
+            ReportHistory::create([
+                'report_id' => $report->id,
+                'user_id' => $request->user()->id,
+                'status' => 'completed',
+                'note' => 'Barang sudah kembali ke pemilik.',
+            ]);
 
-    public function reject(Request $request, Report $report)
-    {
-        if ($report->status !== 'pending') {
-            return back()->with('error', 'Hanya laporan berstatus Menunggu yang bisa ditolak.');
-        }
+            Notification::create([
+                'user_id' => $report->user_id,
+                'title' => 'Laporan selesai',
+                'message' => 'Laporan "' . $report->item_name . '" ditandai selesai. Terima kasih!',
+                'type' => 'report',
+            ]);
 
-        $validated = $request->validate([
-            'rejection_reason' => 'required|string|min:5|max:500',
-        ], [
-            'rejection_reason.required' => 'Tulis alasan penolakan supaya pelapor tahu yang perlu diperbaiki.',
-        ]);
+            return true;
+        });
 
-        $report->update(['status' => 'rejected'] + $validated);
-
-        $this->record($report, $validated['rejection_reason']);
-        $this->notify($report, 'Laporan ditolak', "Laporan \"{$report->item_name}\" ditolak: {$validated['rejection_reason']}");
-
-        return back()->with('success', 'Laporan ditolak.');
-    }
-
-    public function complete(Report $report)
-    {
-        if ($report->status !== 'approved') {
-            return back()->with('error', 'Hanya laporan yang sudah disetujui yang bisa ditandai selesai.');
-        }
-
-        $report->update([
-            'status' => 'completed',
-            'completed_at' => now(),
-        ]);
-
-        $this->record($report, 'Barang sudah kembali ke pemilik.');
-        $this->notify($report, 'Laporan selesai', "Laporan \"{$report->item_name}\" ditandai selesai. Terima kasih!");
-
-        return back()->with('success', 'Laporan ditandai selesai.');
+        return $completed
+            ? back()->with('success', 'Laporan ditandai selesai.')
+            : back()->with('error', 'Hanya laporan yang sudah disetujui yang bisa ditandai selesai.');
     }
 
     public function destroy(Report $report)
@@ -131,33 +120,5 @@ class ReportController extends Controller
         $report->delete(); // gambar, klaim, dan riwayat ikut terhapus (cascade)
 
         return redirect()->route($route)->with('success', "Laporan \"{$report->item_name}\" dihapus.");
-    }
-
-    /*
-    | Riwayat butuh user_id admin. Selama area admin belum memakai login
-    | (lihat TODO di routes/web.php), riwayat dilewati.
-    */
-    private function record(Report $report, string $note): void
-    {
-        if (! auth()->check()) {
-            return;
-        }
-
-        ReportHistory::create([
-            'report_id' => $report->id,
-            'user_id' => auth()->id(),
-            'status' => $report->status,
-            'note' => $note,
-        ]);
-    }
-
-    private function notify(Report $report, string $title, string $message): void
-    {
-        Notification::create([
-            'user_id' => $report->user_id,
-            'title' => $title,
-            'message' => $message,
-            'type' => 'report',
-        ]);
     }
 }

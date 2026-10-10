@@ -4,19 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Claim;
-use App\Models\Notification;
-use App\Services\ReportStatistics;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /*
-| Verifikasi klaim kepemilikan barang temuan.
+| Halaman Verifikasi Klaim (daftar & detail).
 |
-| Alur status: pending → approved / rejected, lalu approved → completed
-| (barang sudah diserahkan). Saat klaim selesai, laporannya ikut 'completed'.
+| Perubahan status klaim (setujui / tolak / selesai) diproses oleh
+| AdminController@updateClaim lewat rute admin.claims.update, supaya aturan
+| statusnya hanya ada di satu tempat.
 */
 class ClaimController extends Controller
 {
+    public const STATUSES = [
+        'pending' => 'Menunggu',
+        'approved' => 'Disetujui',
+        'rejected' => 'Ditolak',
+        'completed' => 'Selesai',
+    ];
+
     // Status klaim di database → nilai yang dikenali komponen <x-status-badge>
     public const BADGE = [
         'pending' => 'menunggu',
@@ -29,7 +34,7 @@ class ClaimController extends Controller
     {
         $filters = $request->validate([
             'q' => 'nullable|string|max:100',
-            'status' => 'nullable|in:' . implode(',', array_keys(ReportStatistics::STATUSES)),
+            'status' => 'nullable|in:' . implode(',', array_keys(self::STATUSES)),
         ]);
 
         $claims = Claim::query()
@@ -56,11 +61,12 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         $claim->load([
-            'user:id,name,nim,study_program,email',
+            'user:id,name,nim,study_program,email,phone',
             'report.category:id,name',
             'report.location:id,name',
             'report.user:id,name',
             'report.images',
+            'histories' => fn ($q) => $q->latest()->with('user:id,name'),
         ]);
 
         // Klaim lain untuk barang yang sama, supaya admin bisa membandingkan
@@ -71,78 +77,5 @@ class ClaimController extends Controller
             ->get();
 
         return view('admin.claims.show', compact('claim', 'otherClaims'));
-    }
-
-    public function approve(Request $request, Claim $claim)
-    {
-        if ($claim->status !== 'pending') {
-            return back()->with('error', 'Hanya klaim berstatus Menunggu yang bisa disetujui.');
-        }
-
-        $validated = $request->validate(['admin_note' => 'nullable|string|max:500']);
-        $note = $validated['admin_note'] ?? null;
-
-        DB::transaction(function () use ($claim, $note) {
-            $claim->update(['status' => 'approved', 'admin_note' => $note]);
-
-            // Satu barang hanya punya satu pemilik: klaim lain yang masih menunggu otomatis ditolak
-            $claim->report->claims()
-                ->where('status', 'pending')
-                ->whereKeyNot($claim->id)
-                ->get()
-                ->each(function (Claim $other) {
-                    $other->update(['status' => 'rejected', 'admin_note' => 'Barang sudah diklaim oleh pemilik lain.']);
-                    $this->notify($other, 'Klaim ditolak', "Klaim \"{$other->report->item_name}\" ditolak karena barang sudah diklaim oleh pemilik lain.");
-                });
-        });
-
-        $this->notify($claim, 'Klaim disetujui', "Klaim \"{$claim->report->item_name}\" disetujui. Silakan ambil barang di pos Lost & Found dengan membawa KTM." . ($note ? " Catatan admin: {$note}" : ''));
-
-        return back()->with('success', 'Klaim disetujui. Klaim lain untuk barang ini otomatis ditolak.');
-    }
-
-    public function reject(Request $request, Claim $claim)
-    {
-        if ($claim->status !== 'pending') {
-            return back()->with('error', 'Hanya klaim berstatus Menunggu yang bisa ditolak.');
-        }
-
-        $validated = $request->validate([
-            'admin_note' => 'required|string|min:5|max:500',
-        ], [
-            'admin_note.required' => 'Tulis alasan penolakan supaya pengklaim tahu alasannya.',
-        ]);
-
-        $claim->update(['status' => 'rejected'] + $validated);
-
-        $this->notify($claim, 'Klaim ditolak', "Klaim \"{$claim->report->item_name}\" ditolak: {$validated['admin_note']}");
-
-        return back()->with('success', 'Klaim ditolak.');
-    }
-
-    public function complete(Claim $claim)
-    {
-        if ($claim->status !== 'approved') {
-            return back()->with('error', 'Hanya klaim yang sudah disetujui yang bisa ditandai selesai.');
-        }
-
-        DB::transaction(function () use ($claim) {
-            $claim->update(['status' => 'completed']);
-            $claim->report->update(['status' => 'completed', 'completed_at' => now()]);
-        });
-
-        $this->notify($claim, 'Barang diserahkan', "Barang \"{$claim->report->item_name}\" sudah diserahkan kepadamu. Terima kasih!");
-
-        return back()->with('success', 'Barang ditandai sudah diserahkan ke pemilik.');
-    }
-
-    private function notify(Claim $claim, string $title, string $message): void
-    {
-        Notification::create([
-            'user_id' => $claim->user_id,
-            'title' => $title,
-            'message' => $message,
-            'type' => 'claim',
-        ]);
     }
 }

@@ -134,20 +134,23 @@
                 @if ($report->status === 'pending')
                     <p class="text-small text-text-secondary">Laporan ini belum tampil di situs. Periksa isinya, lalu setujui atau tolak.</p>
 
-                    <form method="POST" action="{{ route('admin.reports.approve', $report) }}">
+                    {{-- Diproses AdminController@updateReport (status + note) --}}
+                    <form method="POST" action="{{ route('admin.reports.update', $report) }}">
                         @csrf
                         @method('PATCH')
+                        <input type="hidden" name="status" value="approved">
                         <x-button type="submit" variant="primary" class="w-full">Setujui Laporan</x-button>
                     </form>
 
-                    <details class="group rounded-md border border-border" @if ($errors->has('rejection_reason')) open @endif>
+                    <details class="group rounded-md border border-border" @if ($errors->has('note')) open @endif>
                         <summary class="cursor-pointer list-none px-4 py-2.5 text-center text-label font-semibold text-danger-text">Tolak Laporan…</summary>
-                        <form method="POST" action="{{ route('admin.reports.reject', $report) }}" class="flex flex-col gap-3 border-t border-border p-4">
+                        <form method="POST" action="{{ route('admin.reports.update', $report) }}" class="flex flex-col gap-3 border-t border-border p-4">
                             @csrf
                             @method('PATCH')
-                            <label for="rejection_reason" class="text-small font-semibold text-text-secondary">Alasan penolakan</label>
-                            <textarea id="rejection_reason" name="rejection_reason" rows="3" required class="{{ $textareaClass }}" placeholder="Contoh: Foto tidak jelas, mohon unggah ulang.">{{ old('rejection_reason') }}</textarea>
-                            @error('rejection_reason')
+                            <input type="hidden" name="status" value="rejected">
+                            <label for="reject_note" class="text-small font-semibold text-text-secondary">Alasan penolakan</label>
+                            <textarea id="reject_note" name="note" rows="3" required minlength="5" class="{{ $textareaClass }}" placeholder="Contoh: Foto tidak jelas, mohon unggah ulang.">{{ old('note') }}</textarea>
+                            @error('note')
                                 <p class="text-small text-danger-text">{{ $message }}</p>
                             @enderror
                             <x-button type="submit" variant="danger" class="w-full">Kirim Penolakan</x-button>
@@ -163,6 +166,14 @@
                         @method('PATCH')
                         <x-button type="submit" variant="primary" class="w-full">Tandai Selesai</x-button>
                     </form>
+                @elseif ($report->status === 'claimed')
+                    @php $approvedClaim = $report->claims->firstWhere('status', 'approved'); @endphp
+                    <p class="text-small text-text-secondary">
+                        Klaim{{ $approvedClaim?->user ? ' dari ' . $approvedClaim->user->name : '' }} sudah disetujui. Barang menunggu diserahkan ke pemiliknya.
+                    </p>
+                    @if ($approvedClaim)
+                        <x-button variant="primary" :href="route('admin.claims.show', $approvedClaim)" class="w-full">Buka Klaim</x-button>
+                    @endif
                 @elseif ($report->status === 'completed')
                     <p class="text-small text-text-secondary">
                         Barang sudah kembali ke pemilik{{ $report->completed_at ? ' pada ' . $report->completed_at->locale('id')->translatedFormat('d M Y') : '' }}.

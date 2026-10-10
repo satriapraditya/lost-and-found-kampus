@@ -27,12 +27,24 @@ class AuthController extends Controller
         if (! Auth::attempt([$field => $credentials['identifier'], 'password' => $credentials['password']], $remember)) {
             return back()
                 ->withErrors(['identifier' => 'Email/NIM atau kata sandi tidak sesuai.'])
-                ->onlyInput('identifier');
+                ->onlyInput('identifier', 'role');
+        }
+
+        $isAdmin = $request->user()->role === 'admin';
+
+        // Tab "Administrator" di halaman login hanya untuk akun admin
+        if ($request->input('role') === 'admin' && ! $isAdmin) {
+            Auth::logout();
+
+            return back()
+                ->withErrors(['identifier' => 'Akun ini bukan admin. Masuk lewat tab User.'])
+                ->onlyInput('identifier', 'role');
         }
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('beranda'));
+        // Admin langsung ke panel admin, user ke beranda (kecuali ada halaman tujuan sebelumnya)
+        return redirect()->intended($isAdmin ? route('admin.index') : route('beranda'));
     }
 
     public function showRegister()
